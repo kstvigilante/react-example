@@ -1,10 +1,10 @@
+import { Switch,BrowserRouter } from 'react-router-dom'
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import styled from 'styled-components';
 import * as Eos from 'eosjs'
-
-const BrowserRouter = require('react-router-dom').BrowserRouter
+import {newgame, joingame, delgame, submitturn, claimvictory} from "./utils/methods";
 const Route = require('react-router-dom').Route
 const Link = require('react-router-dom').Link
 
@@ -13,25 +13,29 @@ class App extends Component {
   
   render() {
     return (
-      <Container>
-        <Header>
-          <Title>Eos Stamina</Title>
-        </Header>
-        <SideBar>
+      <BrowserRouter>
+         <Container>
+          <Header>
+            <Title>Eos Stamina</Title>
+          </Header>
+          <SideBar>
         
           <List>
           <Listitem><Button onClick = {()=> this.scatterLogin()}>
             Scatter login
           </Button></Listitem>
 
-          <Listitem><Button>
-            Create Game
+          <Listitem><Button onClick={()=> newgame("sidrandom123","eosio.token1","20.0000 EOS",200,()=>{
+            console.log("function called create game");
+          })}>
+          
+            <Link to={{path: "/create", state:{name: "siddharth"}}}>Create Game</Link>
           </Button></Listitem>
           
           <Listitem><Button>
             Transfer
           </Button></Listitem>
-          <Listitem><Button>
+          <Listitem><Button onClick = {()=> joingame()}>
             Join Game
           </Button></Listitem>
           <Listitem><Button>
@@ -49,13 +53,25 @@ class App extends Component {
         
         <RightSide>
           
+
         </RightSide>
         <MainArea>
-
+          <Display>
+        <Switch>
+          <Route exact path='/' component={ScatterLogin}/>
+          {/* both /roster and /roster/:number begin with /roster */}
+          <Route path='/create' component={CreateGame}/>
+          <Route path='/join' component={JoinGame}/>
+      </Switch>
+      </Display>
         </MainArea>
       </Container>    
+      </BrowserRouter>
+     
     );
   }
+
+
   scatterLogin(cb) {
     const network = {
       protocol: 'http', // Defaults to https
@@ -101,13 +117,14 @@ const Container = styled.div `
   
   display : grid;
   grid-template-columns: 1fr 2fr;
-  grid-template-rows: 1fr 2fr 1fr;
+  grid-template-rows: 1fr 2fr 1fr 1fr;
   width: 100%;
   height: 100%;
   min-height: 800px;
   background-color: white;
 
 `;
+
 
 
 const Button = styled.button
@@ -143,7 +160,9 @@ const MainArea = styled.div
   grid-row-start: 2;
   background-color: #aaaaaa;
   margin: auto;
-`
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+`;
 const Header = styled.div `
   background-color: white;
   grid-column-start: 1;
@@ -164,7 +183,7 @@ const RightSide = styled.div
   grid-column-start: 2;
   grid-row-start: 2;
   background-color: #cccccc;
-`
+`;
 
 const LeftSideBar = styled.div `
   background-color: #ffffff;
@@ -205,8 +224,50 @@ const Title = styled.div `
   justify-content: center;
   `;
 
- 
+const ScatterLogin = ()=>
+{
+return <div>scatter login</div>; 
+}
 
-   
+const CreateGame = (props)=>
+{ 
+  
+  console.log("props ", props.location.pathname);
+  console.log(" ", props.match.path);
+  console.log(" ",props.match.url);
+  return <div>create game</div>; 
+}
 
+const Transfer = ()=>
+{
+  return <div> transfer funds</div>;
+}
+
+const JoinGame = ()=>
+{
+  return <div>Join an existing game</div>; 
+}
+
+const DeleteGame = ()=>
+{
+  return <div>Delete an existing game</div>; 
+}
+
+const SubmitTurn = ()=>
+{
+  return <div>submit your answer</div>; 
+}
+
+const ClaimVictory = ()=>
+{
+  return <div>claim your victory</div>; 
+}
+
+const Display = styled.div
+`
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+`;
 export default App;
